@@ -1,21 +1,17 @@
 import numpy as np
 
-
 def sigmoid(x):
     # Sigmoid activation function: f(x) = 1 / (1 + e^(-x))
     return 1 / (1 + np.exp(-x))
-
 
 def deriv_sigmoid(x):
     # Derivative of sigmoid: f'(x) = f(x) * (1 - f(x))
     fx = sigmoid(x)
     return fx * (1 - fx)
 
-
 def mse_loss(y_true, y_pred):
     # y_true and y_pred are numpy arrays of the same length.
     return ((y_true - y_pred) ** 2).mean()
-
 
 class OurNeuralNetwork:
     """
@@ -24,12 +20,7 @@ class OurNeuralNetwork:
       - a hidden layer with 2 neurons (h1, h2)
       - an output layer with 1 neuron (o1)
 
-    *** DISCLAIMER ***:
-    The code below is intended to be simple and educational, NOT optimal.
-    Real neural net code looks nothing like this. DO NOT use this code.
-    Instead, read/run it to understand how this specific network works.
     """
-
     def __init__(self):
         # Weights
         self.w1 = np.random.normal()
@@ -38,7 +29,6 @@ class OurNeuralNetwork:
         self.w4 = np.random.normal()
         self.w5 = np.random.normal()
         self.w6 = np.random.normal()
-
         # Biases
         self.b1 = np.random.normal()
         self.b2 = np.random.normal()
@@ -118,26 +108,49 @@ class OurNeuralNetwork:
                 print("Epoch %d loss: %.3f" % (epoch, loss))
 
 
+def standardize_data(data):
+    mean = np.mean(data)
+    std = np.std(data)
+    standardized_data = (data - mean) / std
+    return standardized_data
+
+def encode_gender(labels):
+    return np.array([0 if gender == 'M' else 1 for gender in labels])
+
 # Define dataset
-data = np.array([
-    [-2, -1],  # Alice
-    [25, 6],  # Bob
-    [17, 4],  # Charlie
-    [-15, -6],  # Diana
-])
-all_y_trues = np.array([
-    1,  # Alice
-    0,  # Bob
-    0,  # Charlie
-    1,  # Diana
-])
+weights = np.array([133, 160, 152, 120])
+heights = np.array([65, 72, 70, 60])
+labels = np.array(['F', 'M', 'M', 'F'])
 
-# Train our neural network!
+# Standardize the data
+standardized_weights = standardize_data(weights)
+standardized_heights = standardize_data(heights)
+
+# Encode gender labels
+encoded_labels = encode_gender(labels)
+
+# Train our neural network
 network = OurNeuralNetwork()
-network.train(data, all_y_trues)
 
-# Make some predictions
-emily = np.array([-7, -3]) # 128 pounds, 63 inches
-frank = np.array([20, 2])  # 155 pounds, 68 inches
-print("Emily: %.3f" % network.feedforward(emily)) # 0.951 - F
-print("Frank: %.3f" % network.feedforward(frank)) # 0.039 - M
+# Combine standardized weights and heights into one array
+data = np.column_stack((standardized_weights, standardized_heights))
+
+# Train the neural network using standardized data
+network.train(data, encoded_labels)
+
+# Get user input for weight and height
+user_weight = float(input("Enter weight (pounds): "))
+user_height = float(input("Enter height (inch): "))
+
+# Standardize user input using your standardization function
+standardized_user_input = standardize_data(np.array([user_weight, user_height]))
+
+# Make predictions
+prediction = network.feedforward(standardized_user_input)
+predicted_gender = 1 if prediction >= 0.5 else 0
+
+# Print the result
+print("Predicted Gender: {}".format(predicted_gender))
+
+# male 0
+# female 1
