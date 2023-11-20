@@ -9,6 +9,9 @@ def deriv_sigmoid(x):
     fx = sigmoid(x)
     return fx * (1 - fx)
 
+# The sigmoid function squashes the input values between 0 and 1,
+# and its derivative is used during the backpropagation step in training.
+
 def mse_loss(y_true, y_pred):
     # y_true and y_pred are numpy arrays of the same length.
     return ((y_true - y_pred) ** 2).mean()
@@ -34,7 +37,7 @@ class OurNeuralNetwork:
         self.b2 = np.random.normal()
         self.b3 = np.random.normal()
 
-    def feedforward(self, x):
+    def feedforward(self, x): # feedforward method to compute the output of the network given an input.
         # x is a numpy array with 2 elements.
         h1 = sigmoid(self.w1 * x[0] + self.w2 * x[1] + self.b1)
         h2 = sigmoid(self.w3 * x[0] + self.w4 * x[1] + self.b2)
