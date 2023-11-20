@@ -1,2 +1,12 @@
 __pycache__
 .idea/
+src/dogs_vs_cats
+src/cat.jpg
+src/dog.jpg
+src/data.py
+src/kaggle.json
+src/main.py
+src/nnw.py
+src/rnn.py
+src/train
+src/test
